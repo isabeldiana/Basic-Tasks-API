@@ -7,16 +7,16 @@ import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
+  private jwtExpirationTimeSeconds: number
   constructor(
-    private jwtExpirationTimeSeconds: number,
-    private readonly userService:UsersService,
+    private readonly usersService:UsersService,
     private readonly jwtService: JwtService,
     private readonly configService:ConfigService,
   ){
     this.jwtExpirationTimeSeconds = +this.configService.get<number>('JWT_EXPIRATION_TIME')
   } 
     signIn(username: string, password: string): AuthResponseDto{
-      const foundUser = this.userService.findByUserName(username);
+      const foundUser = this.usersService.findByUserName(username);
     if( !foundUser || !bcryptCompareSync(password, foundUser.password)){
       throw new UnauthorizedException();
     }
