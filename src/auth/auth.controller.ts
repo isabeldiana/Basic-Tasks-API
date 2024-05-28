@@ -7,10 +7,10 @@ export class AuthController {
   constructor(private authService: AuthService){}
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  singIn(
+  async singIn(
     @Body('username')username:string,
     @Body('password')password:string
-  ):AuthResponseDto{
-    return this.authService.signIn(username,password);
+  ):Promise<AuthResponseDto>{
+     return await this.authService.signIn(username,password);
   }
 }
