@@ -55,15 +55,14 @@ export class TaskService {
  await this.taskRepository.update(id, this.mapDtoToEntity(task))
     }
 
-  remove(id: string){
-    let taskIndex = this.tasks.findIndex(t => t.id === id);
-      if(taskIndex >= 0 ){
-        this.tasks.splice(taskIndex, 1);
-        return;
-      }
-
+  async remove(id: string){
+    const result = await this.taskRepository.delete(id);
+    if(!result.affected){
       throw new HttpException(`Task with id ${id} not found`, HttpStatus.BAD_REQUEST) 
-  }
+
+      
+    }
+     }
 
   private mapEntityToDto( taskEntity: TaskEntity): TaskDto{
   return {
@@ -76,10 +75,12 @@ export class TaskService {
   }
 
   private mapDtoToEntity(taskDto: TaskDto): Partial<TaskEntity>{
-    return {title: taskDto.title,
-    description: taskDto.description,
-    expiration: taskDto.expiration,
-    status: taskDto.status.toString()
+    return {
+      title: taskDto.title ?? '', // Verificação de nulidade
+      description: taskDto.description ?? '', // Verificação de nulidade
+      expiration: taskDto.expiration, // Verifique se expiration pode ser undefined
+      status: taskDto.status?.toString() ?? 'UNKNOWN', // Verificação de nulidade com fallback
+    
   }
 }
 }

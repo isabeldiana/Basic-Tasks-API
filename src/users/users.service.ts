@@ -1,6 +1,5 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { UserDto } from './user.tdo';
-import { v4 as uuid } from 'uuid';
 import { hashSync as  bcryptHashSync } from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/db/entities/users.entity';
@@ -15,7 +14,8 @@ export class UsersService {
    ){ }
 async create(newUser: UserDto){
  const userAlreadyRegistered = await this.findByUserName(newUser.username)
- if(userAlreadyRegistered){
+   
+  if(userAlreadyRegistered){
   throw new ConflictException(`User '${newUser.username}' already registered`)
  }
 
